@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hex Map</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.27.2/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="search-text">
+            <input class="search-text-input" v-model="search"/>
+        </div>
+        <div class="result">
+            <template v-if="matchedLineup.length">
+                <div v-for="({name, quality}, index) in matchedLineup" :key="index" class="result-item" >
+                    <div class="quality" :class="{'s': quality.toLowerCase()==='s'}">{{quality}}</div> 
+                    <div class="lineup">{{name}}</div>
+                </div>
+            </template>
+            <div v-else style="margin: auto;" class="result-item">什么也无有~</div>
+        </div>
+    </div>
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data(){
+        return {
+            search: '',
+            lineupList: []
+        }
+    },
+    computed: {
+        matchedLineup(){
+            return this.search?this.lineupList.filter(l=>l.hex.some(h=>h.toLowerCase().includes(this.search.toLowerCase()))):[];
+        }
+    },
+    mounted(){
+        this.initialize();
+    },
+    methods: {
+        async initialize(){
+            const hexMap = Object.entries((await axios.get('https://game.gtimg.cn/images/lol/act/img/tft/js/hex.js')).data).reduce((pre, [, curr])=>{
+                pre[curr.hexId] = curr.name;
+                return pre;
+            }, {});
+            
+            this.lineupList = (
+                await axios.get('https://game.gtimg.cn/images/lol/act/tftzlkauto/json/totalLineupJson/lineup_total.json')
+            ).data.lineup_list.filter(i=>i.sortID && i.quality).map(i=>{
+                const json = JSON.parse(i.detail.replace(/\n/g, ''));
+                return {
+                    name: json.line_name,
+                    hex: json.hexbuff.recomm.split(',').map(h=>hexMap[h]),
+                    quality: i.quality
+                }
+            }).sort((a, b)=>a.quality>b.quality?-1:1);
+        }
+    }
+}).mount('#app');
+</script>
+    <style>
+    body {
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        background-color: #f2f3f8;
+    }
+
+    #app {
+        margin: auto;
+        width: 37%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .search-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .search-text-input {
+        color: rgba(0, 0, 0, .6);
+        font-size: 18px;
+        width: 90%;
+        outline: none;
+        border: none;
+        background: transparent;
+        border-bottom: rgba(0, 0, 0, .37) solid thin;
+    }
+
+    .result {
+        margin-top: 24px;
+        width: 100%;
+        min-height: 100px;
+        background-color: white;
+        border-radius: 12px;
+        padding: 12px;
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .result-item {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        font-size: 15px;
+    }
+
+    .quality {
+        font-weight: bold;
+        color: goldenrod;
+    }
+
+    .quality.s {
+        color: tomato;
+    }
+
+    .lineup  {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 300;
+        color: rgba(0, 0, 0, .6);
+    }
+
+    @media screen and (max-width: 600px) {
+        #app {
+            width: 90%;
+        }
+    }
+</style>
+</body>
+</html>
