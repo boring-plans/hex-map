@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="180" src="https://tkzt.cn/hex-map/logo.png" alt="Hex Map Logo" />
+    <img width="100" src="https://tkzt.cn/hex-map/logo.png" alt="Hex Map Logo" />
 </p>
 <p align="center">
   <a href="https://github.com/boring-plans/hex-map/blob/main/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/boring-plans/hex-map?color=blue"></a>
