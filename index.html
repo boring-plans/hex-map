@@ -10,101 +10,103 @@
     <script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-    <div id="app">
-        <template v-if="!details">
-            <div class="search-text">
-            <input class="search-text-input" v-model="search"/>
-            </div>
-            <div class="result">
-                <template v-if="matchedLineup.length||matchedLineupSecondary.length">
-                    <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineup.length">
-                        优选
-                    </span>
-                    <div 
-                        v-for="(item, index) in matchedLineup" 
-                        :key="index" 
-                        class="result-item" 
-                        @click="toDetails(item)"
-                    >
-                        <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
-                        <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hex.join('/')}}]</div>
+    <div class="container">
+        <div id="app">
+            <template v-if="!details">
+                <div class="search-text">
+                <input class="search-text-input" v-model="search"/>
+                </div>
+                <div class="result">
+                    <template v-if="matchedLineup.length||matchedLineupSecondary.length">
+                        <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineup.length">
+                            优选
+                        </span>
+                        <div 
+                            v-for="(item, index) in matchedLineup" 
+                            :key="index" 
+                            class="result-item" 
+                            @click="toDetails(item)"
+                        >
+                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
+                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hex.join('/')}}]</div>
+                        </div>
+                        <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineupSecondary.length">
+                            备选
+                        </span>
+                        <div 
+                            v-for="(item, index) in matchedLineupSecondary" 
+                            :key="index+'-secondary'" 
+                            class="result-item" 
+                            @click="toDetails(item)"
+                        >
+                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
+                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hexSecondary.join('/')}}]</div>
+                        </div>
+                    </template>
+                    <div v-else style="margin: auto; padding: 12px; font-size: small">空空如也~</div>
+                </div>
+            </template>
+            <div class="details" v-else>
+                <div class="title">
+                    <div class="content">
+                        {{details.name}}
                     </div>
-                    <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineupSecondary.length">
-                        备选
-                    </span>
-                    <div 
-                        v-for="(item, index) in matchedLineupSecondary" 
-                        :key="index+'-secondary'" 
-                        class="result-item" 
-                        @click="toDetails(item)"
-                    >
-                        <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
-                        <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hexSecondary.join('/')}}]</div>
+                </div>
+                <div class="detail">
+                    <div class="title">
+                        海克斯
                     </div>
-                </template>
-                <div v-else style="margin: auto; padding: 12px; font-size: small">空空如也~</div>
-            </div>
-        </template>
-        <div class="details" v-else>
-            <div class="title">
-                <div class="content">
-                    {{details.name}}
+                    <div>
+                        优选：{{details.hex.join('、')}}
+                    </div>
+                    <div>
+                        备选：{{details.hexSecondary.join('、')}}
+                    </div>
                 </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    海克斯
+                <div class="detail">
+                    <div class="title">
+                        前期
+                    </div>
+                    <div>
+                        {{details.earlyPeriod}}
+                    </div>
                 </div>
-                <div>
-                    优选：{{details.hex.join('、')}}
+                <div class="detail">
+                    <div class="title">
+                        D 牌
+                    </div>
+                    <div>
+                        {{details.dTime}}
+                    </div>
                 </div>
-                <div>
-                    备选：{{details.hexSecondary.join('、')}}
+                <div class="detail">
+                    <div class="title">
+                        装备
+                    </div>
+                    <div>
+                        {{details.equipment}}
+                    </div>
                 </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    前期
+                <div class="detail">
+                    <div class="title">
+                        克制
+                    </div>
+                    <div>
+                        {{details.enemy}}
+                    </div>
                 </div>
-                <div>
-                    {{details.earlyPeriod}}
+                <div class="detail">
+                    <div class="title">
+                        站位
+                    </div>
+                    <div>
+                        {{details.location}}
+                    </div>
                 </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    D 牌
-                </div>
-                <div>
-                    {{details.dTime}}
-                </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    装备
-                </div>
-                <div>
-                    {{details.equipment}}
-                </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    克制
-                </div>
-                <div>
-                    {{details.enemy}}
-                </div>
-            </div>
-            <div class="detail">
-                <div class="title">
-                    站位
-                </div>
-                <div>
-                    {{details.location}}
-                </div>
-            </div>
-            <div class="footer">
-                <div class="back" @click="details=null">
-                    <img src="/hex-map/arrow-left.svg" />
+                <div class="footer">
+                    <div class="back" @click="details=null">
+                        <img src="/hex-map/arrow-left.svg" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -166,11 +168,19 @@ createApp({
         margin: 0;
         width: 100vw;
         height: 100vh;
-        display: flex;
         background-color: #f2f3f8;
         background-image: url(https://game.gtimg.cn/images/lol/tft/content-site/bg-top.png);
         background-size: cover;
         background-repeat: no-repeat;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        overflow: auto;
+        padding: 24px 0;
+        box-sizing: border-box;
     }
 
     #app {
@@ -184,6 +194,7 @@ createApp({
         border-radius: 12px;
         padding: 12px;
         box-shadow: rgba(0, 0, 0, 0.14) 0 0 10px;
+        box-sizing: border-box;
     }
 
     .search-text {
