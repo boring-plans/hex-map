@@ -15,6 +15,12 @@
 
 ## Change Log
 
+### v1.0.2
+
+Released on 25 July 2022
+
+- 适配推荐海克斯强化只有两条的阵容
+
 ### v1.0.1
 
 Released on 25 July 2022
