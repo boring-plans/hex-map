@@ -3,7 +3,7 @@
     <br>
     <a href="https://github.com/boring-plans/hex-map/tags">
         <h1>Hex Map</h1>
-        <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/boring-plans/hex-map">
+        <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/tkzt/hex-map">
     </a>
 </p>
 
