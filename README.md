@@ -1,14 +1,11 @@
 <p align="center">
-    <img width="100" src="https://tkzt.cn/hex-map/logo.png" alt="Hex Map Logo" />
+    <img width="100" src="https://raw.githubusercontent.com/tkzt/hex-map/40bef32d5c07b5d8d460cdfdf966bd0890b40639/logo.svg" alt="Hex Map Logo" align="right" />
+    <br>
+    <a href="https://github.com/boring-plans/hex-map/tags">
+        <h1>Hex Map</h1>
+        <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/boring-plans/hex-map">
+    </a>
 </p>
-<p align="center">
-  <a href="https://github.com/boring-plans/hex-map/blob/main/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/boring-plans/hex-map?color=blue"></a>
-  <a href="https://github.com/boring-plans/hex-map/tags">
-    <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/boring-plans/hex-map">
-  </a>
-</p>
-
-# Hex Map
 
 这是一个可以根据 `海克斯科技强化` 筛选优选阵容的小工具，数据源自 [云顶之奕主题站](https://lol.qq.com/tft/#/index)。
 
