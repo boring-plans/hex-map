@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,38 +10,37 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@0.27.2/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3"></script>
 </head>
+
 <body>
     <div class="container">
         <div id="app">
             <template v-if="!details">
                 <div class="search-text">
-                <input class="search-text-input" v-model="search"/>
+                    <input class="search-text-input" v-model="search" />
                 </div>
                 <div class="result">
                     <template v-if="matchedLineup.length||matchedLineupSecondary.length">
-                        <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineup.length">
+                        <span style="font-weight: bold; font-size: 15px;"
+                            v-if="matchedLineup.length">
                             优选
                         </span>
-                        <div 
-                            v-for="(item, index) in matchedLineup" 
-                            :key="index" 
-                            class="result-item" 
-                            @click="toDetails(item)"
-                        >
-                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
-                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hex.join('/')}}]</div>
+                        <div v-for="(item, index) in matchedLineup" :key="index" class="result-item"
+                            @click="toDetails(item)">
+                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">
+                                {{item.quality}}</div>
+                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}],
+                                [{{item.hex.join('/')}}]</div>
                         </div>
-                        <span style="font-weight: bold; font-size: 15px;" v-if="matchedLineupSecondary.length">
+                        <span style="font-weight: bold; font-size: 15px;"
+                            v-if="matchedLineupSecondary.length">
                             备选
                         </span>
-                        <div 
-                            v-for="(item, index) in matchedLineupSecondary" 
-                            :key="index+'-secondary'" 
-                            class="result-item" 
-                            @click="toDetails(item)"
-                        >
-                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">{{item.quality}}</div> 
-                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}], [{{item.hexSecondary.join('/')}}]</div>
+                        <div v-for="(item, index) in matchedLineupSecondary"
+                            :key="index+'-secondary'" class="result-item" @click="toDetails(item)">
+                            <div class="quality" :class="{'s': item.quality.toLowerCase()==='s'}">
+                                {{item.quality}}</div>
+                            <div class="lineup">[{{item.name.match(/【(.*?)】/)[1]}}],
+                                [{{item.hexSecondary.join('/')}}]</div>
                         </div>
                     </template>
                     <div v-else style="margin: auto; padding: 12px; font-size: small">空空如也~</div>
@@ -111,210 +111,209 @@
             </div>
         </div>
     </div>
-<script>
-const { createApp } = Vue;
+    <script>
+        const { createApp } = Vue;
 
-createApp({
-    data(){
-        return {
-            search: '',
-            lineupList: [],
-            details: null,
-        }
-    },
-    computed: {
-        matchedLineup(){
-            return this.search?this.lineupList.filter(l=>l.hex.some(h=>h?.toLowerCase().includes(this.search.toLowerCase()))):[];
-        },
-        matchedLineupSecondary(){
-            return this.search?this.lineupList.filter(l=>l.hexSecondary.some(h=>h?.toLowerCase().includes(this.search.toLowerCase()))):[];
-        }
-    },
-    mounted(){
-        this.initialize();
-    },
-    methods: {
-        async initialize(){
-            const hexMap = Object.entries((await axios.get('https://game.gtimg.cn/images/lol/act/img/tft/js/hex.js')).data).reduce((pre, [, curr])=>{
-                pre[curr.hexId] = curr.name;
-                return pre;
-            }, {});
-            
-            this.lineupList = (
-                await axios.get('https://game.gtimg.cn/images/lol/act/tftzlkauto/json/totalLineupJson/lineup_total.json')
-            ).data.lineup_list.filter(i=>i.sortID && i.quality).map(i=>{
-                const json = JSON.parse(i.detail.replace(/\n/g, ''));
+        createApp({
+            data() {
                 return {
-                    name: json.line_name,
-                    hex: json.hexbuff?.recomm.split(',').map(h=>hexMap[h]) || [],
-                    hexSecondary: json.hexbuff?.replace.split(',').map(h=>hexMap[h]) || [],
-                    quality: i.quality,
-                    earlyPeriod: json.early_info,
-                    dTime: json.d_time,
-                    equipment: json.equipment_info,
-                    enemy: json.enemy_info,
-                    location: json.location_info
+                    search: '',
+                    lineupList: [],
+                    details: null,
                 }
-            }).sort((a, b)=>a.quality>b.quality?-1:1);
+            },
+            computed: {
+                matchedLineup() {
+                    return this.search ? this.lineupList.filter(l => l.hex.some(h => h?.toLowerCase().includes(this.search.toLowerCase()))) : [];
+                },
+                matchedLineupSecondary() {
+                    return this.search ? this.lineupList.filter(l => l.hexSecondary.some(h => h?.toLowerCase().includes(this.search.toLowerCase()))) : [];
+                }
+            },
+            mounted() {
+                this.initialize();
+            },
+            methods: {
+                async initialize() {
+                    const hexMap = Object.entries((await axios.get('https://game.gtimg.cn/images/lol/act/img/tft/js/hex.js')).data).reduce((pre, [, curr]) => {
+                        pre[curr.hexId] = curr.name;
+                        return pre;
+                    }, {});
 
-            console.log(this.lineupList);
-        },
-        toDetails(item){
-            this.details = item;
-        }
-    }
-}).mount('#app');
-</script>
+                    this.lineupList = (
+                        await axios.get('https://game.gtimg.cn/images/lol/act/tftzlkauto/json/totalLineupJson/lineup_total.json')
+                    ).data.lineup_list.filter(i => i.sortID && i.quality).map(i => {
+                        const json = JSON.parse(i.detail.replace(/:"([\w\W]*?)"/g, x => x.replace(/[\r\n]/g, '')));
+                        return {
+                            name: json.line_name,
+                            hex: json.hexbuff?.recomm.split(',').map(h => hexMap[h]) || [],
+                            hexSecondary: json.hexbuff?.replace.split(',').map(h => hexMap[h]) || [],
+                            quality: i.quality,
+                            earlyPeriod: json.early_info,
+                            dTime: json.d_time,
+                            equipment: json.equipment_info,
+                            enemy: json.enemy_info,
+                            location: json.location_info
+                        }
+                    }).sort((a, b) => a.quality > b.quality ? -1 : 1);
+                },
+                toDetails(item) {
+                    this.details = item;
+                }
+            }
+        }).mount('#app');
+    </script>
     <style>
-    body {
-        margin: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #f2f3f8;
-        background-image: url(https://game.gtimg.cn/images/lol/tft/content-site/bg-top.png);
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
-    .container {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        overflow: auto;
-        padding: 24px 0;
-        box-sizing: border-box;
-    }
-
-    #app {
-        margin: auto;
-        width: 37%;
-        display: flex;
-        flex-wrap: wrap;
-        background-color: #f2f3f8;
-        backdrop-filter: saturate(180%) blur(20px);
-        background: rgba(255, 255, 255, 0.37) !important;
-        border-radius: 12px;
-        padding: 12px;
-        box-shadow: rgba(0, 0, 0, 0.14) 0 0 10px;
-        box-sizing: border-box;
-    }
-
-    .search-text {
-        width: 100%;
-        text-align: center;
-    }
-
-    .search-text-input {
-        color: rgba(0, 0, 0, .6);
-        font-size: 18px;
-        width: 95%;
-        outline: none;
-        border: none;
-        background: transparent;
-        border-bottom: rgba(0, 0, 0, .37) solid thin;
-        padding: 8px 0;
-    }
-
-    .result {
-        width: 100%;
-        min-height: 100px;
-        border-radius: 12px;
-        padding: 12px;
-        box-sizing: border-box;
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .result-item {
-        cursor: pointer;
-        width: 100%;
-        overflow: hidden;
-        display: flex;
-        font-size: 15px;
-    }
-
-    .quality {
-        font-weight: bold;
-        color: goldenrod;
-    }
-
-    .quality.s {
-        color: tomato;
-    }
-
-    .lineup  {
-        margin-left: 8px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-weight: 300;
-        color: rgba(0, 0, 0, .6);
-    }
-
-
-    .details {
-        width: 100%;
-        color: rgba(0, 0, 0, .7);
-        text-align: justify;
-        letter-spacing: 2px;
-        line-height: 1.37;
-    }
-
-    .details .title {
-        font-size: large;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-        justify-content: space-between;
-    }
-
-    .details .footer {
-        padding: 6px 0;
-        display: flex;
-        justify-content: end;
-    }
-
-    .details .footer .back {
-        flex: 0 0 32px;
-        width: 32px;
-        height: 32px;
-        cursor: pointer;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .details .footer .back:hover {
-        background-color: rgba(0, 0, 0, .06);
-    }
-
-    .details .footer .back img {
-        width: 24px;
-        height: 24px;
-    }
-
-    .details .title .content {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .detail {
-        font-size: small;
-    }
-
-    .detail .title{
-        font-size: medium;
-        margin: 6px 0;
-    }
-
-    @media screen and (max-width: 600px) {
-        #app {
-            width: 90%;
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f2f3f8;
+            background-image: url(https://game.gtimg.cn/images/lol/tft/content-site/bg-top.png);
+            background-size: cover;
+            background-repeat: no-repeat;
         }
-    }
-</style>
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: auto;
+            padding: 24px 0;
+            box-sizing: border-box;
+        }
+
+        #app {
+            margin: auto;
+            width: 37%;
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #f2f3f8;
+            backdrop-filter: saturate(180%) blur(20px);
+            background: rgba(255, 255, 255, 0.37) !important;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: rgba(0, 0, 0, 0.14) 0 0 10px;
+            box-sizing: border-box;
+        }
+
+        .search-text {
+            width: 100%;
+            text-align: center;
+        }
+
+        .search-text-input {
+            color: rgba(0, 0, 0, .6);
+            font-size: 18px;
+            width: 95%;
+            outline: none;
+            border: none;
+            background: transparent;
+            border-bottom: rgba(0, 0, 0, .37) solid thin;
+            padding: 8px 0;
+        }
+
+        .result {
+            width: 100%;
+            min-height: 100px;
+            border-radius: 12px;
+            padding: 12px;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .result-item {
+            cursor: pointer;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            font-size: 15px;
+        }
+
+        .quality {
+            font-weight: bold;
+            color: goldenrod;
+        }
+
+        .quality.s {
+            color: tomato;
+        }
+
+        .lineup {
+            margin-left: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 300;
+            color: rgba(0, 0, 0, .6);
+        }
+
+
+        .details {
+            width: 100%;
+            color: rgba(0, 0, 0, .7);
+            text-align: justify;
+            letter-spacing: 2px;
+            line-height: 1.37;
+        }
+
+        .details .title {
+            font-size: large;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            justify-content: space-between;
+        }
+
+        .details .footer {
+            padding: 6px 0;
+            display: flex;
+            justify-content: end;
+        }
+
+        .details .footer .back {
+            flex: 0 0 32px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .details .footer .back:hover {
+            background-color: rgba(0, 0, 0, .06);
+        }
+
+        .details .footer .back img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .details .title .content {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .detail {
+            font-size: small;
+        }
+
+        .detail .title {
+            font-size: medium;
+            margin: 6px 0;
+        }
+
+        @media screen and (max-width: 600px) {
+            #app {
+                width: 90%;
+            }
+        }
+    </style>
 </body>
+
 </html>
