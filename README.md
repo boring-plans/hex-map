@@ -12,6 +12,12 @@
 
 ## Change Log
 
+### v1.0.3
+
+Released on 07 August 2023
+
+- 适配返回阵容详情中包含 `\r\n` 的情况
+
 ### v1.0.2
 
 Released on 25 July 2022
